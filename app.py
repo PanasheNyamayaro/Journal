@@ -1,4 +1,4 @@
-pip install gspread oauth2client streamlit
+!pip install gspread oauth2client streamlit
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
