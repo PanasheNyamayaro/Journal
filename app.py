@@ -14,7 +14,7 @@ creds = Credentials.from_service_account_info(creds_dict)
 client = gspread.authorize(creds)
 
 # Connect to your Google Sheet
-sheet = client.open("Velor Journal DB").sheet1
+sheet = client.open("Velor_Trading_Journal").sheet1
 
 st.success("✅ Connected to Google Sheets successfully!")
 
