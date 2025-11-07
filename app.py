@@ -1,25 +1,23 @@
-
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
-# Google Sheets setup
-scope = ["https://spreadsheets.google.com/feeds",
-         "https://www.googleapis.com/auth/drive"]
-
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    "credentials.json",
-    scope
-)
-
-client = gspread.authorize(credentials)
-
-# Open sheet (CHANGE name to yours)
-sheet = client.open("Velor Journal DB").sheet1
+import json
+from google.oauth2.service_account import Credentials
 
 st.title("📒 Velor Trading Journal")
 
-st.write("✅ Connected to Google Sheets successfully!")
+# Load credentials from Streamlit Secrets
+creds_dict = st.secrets["gcp_service_account"]
+
+# Authenticate with Google
+creds = Credentials.from_service_account_info(creds_dict)
+client = gspread.authorize(creds)
+
+# Connect to your Google Sheet
+sheet = client.open("Velor Journal DB").sheet1
+
+st.success("✅ Connected to Google Sheets successfully!")
+
 with st.form("trade_form"):
     pair = st.selectbox("Forex Pair", ["EURUSD", "GBPUSD", "XAUUSD"])
     direction = st.radio("Buy or Sell?", ["Buy", "Sell"])
