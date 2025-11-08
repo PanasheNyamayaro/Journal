@@ -10,7 +10,7 @@ scope = [
 
 # ✅ Load service account credentials from secrets
 creds = Credentials.from_service_account_info(
-    st.secrets["gsp_service_account"],
+    st.secrets["gcp_service_account"],
     scopes=scope
 )
 
