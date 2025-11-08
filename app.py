@@ -17,7 +17,7 @@ creds = Credentials.from_service_account_info(
 client = gspread.authorize(creds)
 
 try:
-    sheet = client.open("Velor_Trading_Journal").sheet1
+    sheet = client.open("Velor_Tading_Journal").sheet1
     st.success("✅ Connected to Google Sheets Successfully!")
 except Exception as e:
     st.error(f"❌ Failed to connect: {e}")
