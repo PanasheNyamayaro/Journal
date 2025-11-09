@@ -16,7 +16,7 @@ creds = Credentials.from_service_account_info(
 client = gspread.authorize(creds)
 
 # Open your Sheet
-sheet = client.open("Velor_Trading_Journal").sheet1  # update if name changed
+sheet = client.open("Velor_Tading_Journal").sheet1  # update if name changed
 
 st.title("📓 Velor Trade Journal")
 st.write("Log your trade details below ⬇")
