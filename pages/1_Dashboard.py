@@ -11,7 +11,7 @@ scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
-creds = Credentials.from_service_account_info(st.secrets["[[gcp_service_account]]"], scopes=scope)
+creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
 gc = gspread.authorize(creds)
 sheet = gc.open("Velor_Tading_Journal").sheet1
 
