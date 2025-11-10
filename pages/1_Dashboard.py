@@ -20,7 +20,7 @@ data = sheet.get_all_values()
 df = pd.DataFrame(data[1:], columns=data[0])
 
 # Convert types
-numeric_cols = ["RR", "PnL_USD", "PnL_Percent", "Final Balance"]
+numeric_cols = ["RR", "PnL_USD", "PnL_Percentage", "Final Balance"]
 for col in numeric_cols:
     df[col] = pd.to_numeric(df[col], errors="coerce")
 
