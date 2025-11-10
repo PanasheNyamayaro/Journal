@@ -20,7 +20,7 @@ data = sheet.get_all_values()
 df = pd.DataFrame(data[1:], columns=data[0])
 
 # Convert types
-numeric_cols = ["RR", "Pnl_USD", "Pnl_Percent", "Final Balance"]
+numeric_cols = ["RR", "PnL_USD", "PnL_Percent", "Final Balance"]
 for col in numeric_cols:
     df[col] = pd.to_numeric(df[col], errors="coerce")
 
@@ -31,7 +31,7 @@ losses = len(df[df["Result"] == "Loss"])
 
 win_rate = round((wins / total_trades) * 100, 2) if total_trades > 0 else 0
 avg_rr = round(df["RR"].mean(), 2) if total_trades > 0 else 0
-avg_pnl_percent = round(df["Pnl_Percent"].mean(), 2) if total_trades > 0 else 0
+avg_pnl_percent = round(df["PnL_Percent"].mean(), 2) if total_trades > 0 else 0
 
 st.title("📊 Velor Journal Dashboard")
 st.caption("Live metrics from your trading history")
