@@ -31,7 +31,7 @@ losses = len(df[df["Result"] == "Loss"])
 
 win_rate = round((wins / total_trades) * 100, 2) if total_trades > 0 else 0
 avg_rr = round(df["RR"].mean(), 2) if total_trades > 0 else 0
-avg_pnl_percent = round(df["PnL_Percent"].mean(), 2) if total_trades > 0 else 0
+avg_pnl_percent = round(df["PnL_Percentage"].mean(), 2) if total_trades > 0 else 0
 
 st.title("📊 Velor Journal Dashboard")
 st.caption("Live metrics from your trading history")
