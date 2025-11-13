@@ -1,24 +1,49 @@
-# app.py -- Velor Trading Journal (multi-step, mobile-friendly)
+# app.py  — Velor Trading Journal v2 (Beginner-first)
 import streamlit as st
-from datetime import datetime, date, time as dtime
+from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+import io
+import pandas as pd
 import math
 
 st.set_page_config(page_title="Velor Journal", page_icon="📒", layout="centered")
 
-# ---------- Google Sheets auth (uses st.secrets["google_service_account"]) ----------
+# ---------- CONFIG ----------
+SHEET_NAME = "Velor_Trading_Journal"   # exact sheet title
+DRIVE_FOLDER_NAME = "Screenshot"       # exact drive folder name
+SECRETS_KEY = "gcp_service_account"    # your Streamlit secret key name
+
+# ---------- AUTH ----------
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
-creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+creds = Credentials.from_service_account_info(st.secrets[SECRETS_KEY], scopes=scope)
 gc = gspread.authorize(creds)
+drive_service = build("drive", "v3", credentials=creds)
 
-SHEET_NAME = "Velor_Tading_Journal"   # <--- ensure this matches your sheet title EXACTLY
-sheet = gc.open(SHEET_NAME).sheet1
+# ---------- Helpers ----------
+def open_sheet():
+    sh = gc.open(SHEET_NAME)
+    return sh.sheet1
 
-# ---------- Helper functions ----------
+def find_drive_folder_id(folder_name):
+    q = f"name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder'"
+    res = drive_service.files().list(q=q, spaces='drive', fields='files(id, name)').execute()
+    files = res.get('files', [])
+    if files:
+        return files[0]['id']
+    return None
+
+def upload_file_to_drive(folder_id, file_buffer, filename, mime_type):
+    media = MediaIoBaseUpload(file_buffer, mimetype=mime_type, resumable=True)
+    file_metadata = {"name": filename, "parents": [folder_id]}
+    file = drive_service.files().create(body=file_metadata, media_body=media, fields="id, webViewLink").execute()
+    return file.get("webViewLink")
+
 def calc_rr(entry, stop, tp, direction):
     try:
         if direction == "Buy":
@@ -34,7 +59,6 @@ def calc_rr(entry, stop, tp, direction):
         return None
 
 def calc_pips(value1, value2, pair):
-    # rough pip calc: if pair contains 'JPY' use 2 decimal pips, else 4
     try:
         if "JPY" in pair.upper():
             multiplier = 100
@@ -44,158 +68,161 @@ def calc_pips(value1, value2, pair):
     except Exception:
         return 0
 
-def approx_position_size(account_balance, risk_percent, entry, stop, pair):
-    # approximate: money risked / price-distance
+def calc_pnl_usd(pips, lot_size):
+    # simple approximation: 1 pip = $0.10 per 0.01 lot for many FX pairs
+    # We use: pip_value_per_lot = 1 for convenience -> user sees approximate results
+    # Adjust later to currency specifics if needed
     try:
-        risk_amount = account_balance * (risk_percent / 100.0)
-        pip_diff = abs(entry - stop)
-        if pip_diff == 0:
-            return 0
-        # this yields units of quote-currency per pip-unit — keep it simple and labelled 'approx'
-        pos = risk_amount / pip_diff
-        return round(pos, 2)
+        return round(pips * lot_size * 0.1, 2)
     except Exception:
-        return 0
+        return 0.0
 
-# initialize session state for wizard
-if "step" not in st.session_state:
-    st.session_state.step = 1
+# ---------- UI ----------
+st.title("📒 Velor Trading Journal — Log Trade (Beginner Mode)")
+st.caption("Fast logging. Toggle Advanced for more fields. Screenshot optional.")
 
-st.title("📒 Velor Trading Journal — Log a Trade")
-st.caption("Fast multi-step form. Use Next / Back to navigate. Fields optimized for mobile.")
+sheet = open_sheet()
+folder_id = find_drive_folder_id(DRIVE_FOLDER_NAME)
+if folder_id is None:
+    st.warning(f"Drive folder '{DRIVE_FOLDER_NAME}' not found. Uploads will be disabled until folder exists and is shared with service account.")
 
-# ---------- STEP 1: Account & Market Context ----------
-if st.session_state.step == 1:
-    st.subheader("Step 1 — Account & Market")
-    account_balance = st.number_input("Account Balance (before trade, $)", min_value=0.0, value=1000.0, step=10.0, format="%.2f")
-    risk_percent = st.number_input("Risk % on this trade", min_value=0.1, max_value=100.0, value=1.0, step=0.1, format="%.2f")
+# layout grouped cards (single page grouped)
+with st.form("trade_form", clear_on_submit=False):
+    st.subheader("Trade Basics")
+    cols = st.columns(2)
+    pair = cols[0].text_input("Pair (e.g. EURUSD)", value="EURUSD").upper()
+    direction = cols[1].selectbox("Direction", ["Buy", "Sell"])
+    entry_price = st.number_input("Entry Price", format="%.5f", value=0.0)
+    stop_loss = st.number_input("Stop Loss Price", format="%.5f", value=0.0)
+    take_profit = st.number_input("Take Profit Price", format="%.5f", value=0.0)
+
+    st.subheader("Risk & Session")
+    cols = st.columns(3)
+    account_balance = cols[0].number_input("Account Balance ($)", value=1000.0, format="%.2f")
+    risk_percent = cols[1].number_input("Risk %", min_value=0.1, max_value=100.0, value=1.0, step=0.1, format="%.2f")
+    session = cols[2].selectbox("Trading Session", ["Asia", "London", "New York", "Sydney"])
+
     if risk_percent > 5.0:
-        st.warning("Warning: You are risking more than 5% on this trade.")
-    session = st.selectbox("Trading Session", ["London", "New York", "Asian", "London/New York Overlap", "Custom"])
-    market_condition = st.selectbox("Market Condition", ["Trending", "Ranging", "High Volatility", "News-driven", "Other"])
-    day_of_week = datetime.now().strftime("%A")
-    st.markdown(f"**Day:** {day_of_week}")
-    news_filter = st.selectbox("News Filter", ["None", "Minor", "Major (avoid trading)"])
-    exact_time = st.time_input("Exact Time (optional)", value=datetime.now().time())
-    if st.button("Next"):
-        st.session_state.step = 2
-        # store values
-        st.session_state.account_balance = account_balance
-        st.session_state.risk_percent = risk_percent
-        st.session_state.session = session
-        st.session_state.market_condition = market_condition
-        st.session_state.day_of_week = day_of_week
-        st.session_state.news_filter = news_filter
-        st.session_state.exact_time = exact_time
+        st.warning("Warning: Risk > 5% — consider lowering position size.")
 
-# ---------- STEP 2: Setup & Execution ----------
-elif st.session_state.step == 2:
-    st.subheader("Step 2 — Setup & Execution")
-    pair = st.text_input("Pair / Symbol (ex: EURUSD)", value="EURUSD").upper()
-    direction = st.selectbox("Direction", ["Buy", "Sell"])
-    setup_type = st.selectbox("Setup Type", ["Breakout", "Pullback", "Reversal", "Support/Resistance", "Trendline", "Orderflow", "Other"])
-    entry_price = st.number_input("Entry Price", value=1.00000, format="%.5f")
-    stop_loss = st.number_input("Stop Loss Price", value=0.0, format="%.5f")
-    take_profit = st.number_input("Take Profit Price", value=0.0, format="%.5f")
-    exec_quality = st.selectbox("Execution Quality (Plan followed?)", ["Yes", "No", "Partly"])
-    # auto calculations preview
-    rr = calc_rr(entry_price, stop_loss, take_profit, direction)
-    pips_risk = calc_pips(entry_price, stop_loss, pair)
-    pips_target = calc_pips(entry_price, take_profit, pair)
-    pos_size_approx = approx_position_size(st.session_state.get("account_balance", 1000.0), st.session_state.get("risk_percent", 1.0), entry_price, stop_loss, pair)
-    st.markdown(f"**Approx Position Size:** {pos_size_approx} (approx units)")
-    st.markdown(f"**Risk/Reward (R):** {rr if rr is not None else 'N/A'} — **Pips risk**: {pips_risk} — **Pips target**: {pips_target}")
-    cols = st.columns([1,1])
-    if cols[0].button("Back"):
-        st.session_state.step = 1
-    if cols[1].button("Next"):
-        st.session_state.pair = pair
-        st.session_state.direction = direction
-        st.session_state.setup_type = setup_type
-        st.session_state.entry_price = entry_price
-        st.session_state.stop_loss = stop_loss
-        st.session_state.take_profit = take_profit
-        st.session_state.exec_quality = exec_quality
-        st.session_state.rr = rr
-        st.session_state.pips_risk = pips_risk
-        st.session_state.pips_target = pips_target
-        st.session_state.pos_size_approx = pos_size_approx
-        st.session_state.step = 3
+    st.subheader("Psychology (Quick)")
+    cols = st.columns(2)
+    emotion_before = cols[0].selectbox("Emotion Before", ["Calm", "Confident", "Nervous", "Rushed", "Bored", "Greedy", "Revenge"])
+    quick_note = cols[1].text_input("Quick Note (optional)")
 
-# ---------- STEP 3: Psychology ----------
-elif st.session_state.step == 3:
-    st.subheader("Step 3 — Psychology")
-    emotion_before = st.selectbox("Emotion Before Trade", ["Calm", "Confident", "Nervous", "Rushed", "Bored", "Greedy", "Revenge"])
-    emotion_after = st.selectbox("Emotion After Trade", ["Relieved", "Annoyed", "Proud", "Neutral", "Upset", "Surprised"])
-    patience = st.slider("Patience Score", min_value=1, max_value=5, value=3)
-    cols = st.columns([1,1])
-    if cols[0].button("Back"):
-        st.session_state.step = 2
-    if cols[1].button("Next"):
-        st.session_state.emotion_before = emotion_before
-        st.session_state.emotion_after = emotion_after
-        st.session_state.patience = patience
-        st.session_state.step = 4
+    st.subheader("Exit Method")
+    exit_mode = st.radio("Exit Method", ["Auto (Win/Loss/BE)", "Manual Exit Price", "Custom: Partial/Trailing"], index=0)
 
-# ---------- STEP 4: Outcome & Reflection ----------
-elif st.session_state.step == 4:
-    st.subheader("Step 4 — Outcome & Reflection")
-    result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
-    pnl_usd = st.number_input("Profit / Loss ($)", value=0.0, format="%.2f")
-    pnl_percent = round((pnl_usd / st.session_state.get("account_balance", 1.0)) * 100, 2)
-    final_balance = round(st.session_state.get("account_balance", 0.0) + pnl_usd, 2)
-    repeat = st.radio("Would you take this trade again?", ["Yes", "No"])
-    went_right = st.selectbox("What went right?", ["Choice: Setup, Execution, Risk Management, None"])
-    went_wrong = st.selectbox("What went wrong?", ["Choice: Setup, Execution, Risk Management, Impulse"])
-    notes = st.text_area("Notes (optional)")
-    # screenshot upload - we store filename or URL placeholder
-    screenshot = st.file_uploader("Upload screenshot (optional)", type=["png","jpg","jpeg"])
-    if screenshot is not None:
-        # we won't upload image to sheet; we can save filename or use later storage
-        screenshot_name = screenshot.name
+    if exit_mode == "Auto (Win/Loss/BE)":
+        result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
+        exit_price_manual = None
+    elif exit_mode == "Manual Exit Price":
+        exit_price_manual = st.number_input("Manual Exit Price", format="%.5f", value=0.0)
+        result = st.selectbox("Result (optional)", ["Win", "Loss", "Break Even"])
     else:
-        screenshot_name = ""
-    cols = st.columns([1,1])
-    if cols[0].button("Back"):
-        st.session_state.step = 3
+        exit_price_manual = st.number_input("Custom Exit Price (use for partials/trailing)", format="%.5f", value=0.0)
+        result = st.selectbox("Result (optional)", ["Win", "Loss", "Break Even"])
 
-    if cols[1].button("Save Trade → Sheets"):
-        # build row matching sheet columns exactly
-        row = [
-            datetime.now().isoformat(),                       # Timestamp
-            st.session_state.get("account_balance", ""),      # Account Balance
-            st.session_state.get("risk_percent", ""),         # Risk%
-            st.session_state.get("pos_size_approx", ""),      # Position Size (approx)
-            st.session_state.get("session", ""),              # Trading Session
-            st.session_state.get("market_condition", ""),     # Market Condition
-            st.session_state.get("day_of_week", ""),          # Day of Week
-            st.session_state.get("news_filter", ""),          # News Filter
-            str(st.session_state.get("exact_time", "")),      # Exact Time
-            st.session_state.get("pair", ""),                 # Pair
-            st.session_state.get("direction", ""),            # Direction
-            st.session_state.get("setup_type", ""),           # Setup Type
-            st.session_state.get("entry_price", ""),          # Entry
-            st.session_state.get("stop_loss", ""),            # Stop Loss
-            st.session_state.get("take_profit", ""),          # Take Profit
-            st.session_state.get("rr", ""),                   # RR
-            st.session_state.get("pips_risk", ""),            # Pips Risk
-            st.session_state.get("pips_target", ""),          # Pips Target
-            st.session_state.get("exec_quality", ""),         # Execution Quality
-            st.session_state.get("emotion_before", ""),       # Emotion Before
-            st.session_state.get("emotion_after", ""),        # Emotion After
-            st.session_state.get("patience", ""),             # Patience Score
-            result,                                           # Result
-            round(pnl_usd,2),                                 # PnL $
-            round(pnl_percent,2),                             # PnL %
-            final_balance,                                    # Final Account Balance
-            repeat,                                           # Repeat Trade?
-            went_right,                                       # What went right
-            went_wrong,                                       # What went wrong
-            notes,                                            # Notes
-            screenshot_name,                                  # Screenshot filename
-            ""                                                # AI_Feedback (reserved)
-        ]
+    st.subheader("Optional")
+    screenshot_file = st.file_uploader("Screenshot (optional)", type=["png", "jpg", "jpeg"])
+    show_advanced = st.checkbox("Show Advanced Fields (optional)")
+
+    if show_advanced:
+        st.subheader("Advanced (optional)")
+        setup_type = st.selectbox("Setup Type", ["Breakout", "Trend Continuation", "Reversal", "News Trade", "Other"])
+        market_condition = st.selectbox("Market Condition", ["Trending", "Ranging", "High Volatility", "News-driven", "Other"])
+        indicators_used = st.text_input("Indicators Used (comma separated)")
+        execution_score = st.slider("Execution Score (1-5)", 1, 5, 3)
+    else:
+        setup_type = "Other"
+        market_condition = ""
+        indicators_used = ""
+        execution_score = ""
+
+    submitted = st.form_submit_button("✅ Save Trade")
+
+# ---------- On submit ----------
+if submitted:
+    timestamp = datetime.utcnow().isoformat()
+    # determine exit price
+    if exit_mode == "Auto (Win/Loss/BE)":
+        if result == "Win":
+            exit_price = take_profit if take_profit and take_profit > 0 else entry_price
+        elif result == "Loss":
+            exit_price = stop_loss if stop_loss and stop_loss > 0 else entry_price
+        else:
+            exit_price = entry_price
+    else:
+        exit_price = exit_price_manual if exit_price_manual and exit_price_manual > 0 else entry_price
+
+    # pips & rr & pnl calculations
+    pips_made = calc_pips(entry_price, exit_price, pair)
+    rr = calc_rr(entry_price, stop_loss, take_profit, direction)
+    pnl_usd = calc_pnl_usd(pips_made, 1.0)  # default lot multiplier; adjust later
+    pnl_percent = round((pnl_usd / account_balance) * 100, 2) if account_balance else 0.0
+    final_balance = round(account_balance + pnl_usd, 2)
+
+    # position size approx (simple)
+    try:
+        pos_size = round((account_balance * (risk_percent / 100.0)) / abs(entry_price - stop_loss), 4) if stop_loss and entry_price != stop_loss else 0
+    except Exception:
+        pos_size = 0
+
+    # upload screenshot if provided
+    screenshot_link = ""
+    if screenshot_file is not None and folder_id is not None:
+        buf = io.BytesIO(screenshot_file.read())
+        fname = f"{pair}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{screenshot_file.name}"
+        try:
+            link = upload_file_to_drive(folder_id, buf, fname, screenshot_file.type)
+            screenshot_link = link
+        except Exception as e:
+            st.warning("Screenshot upload failed: " + str(e))
+
+    # build row in the agreed column order — match your sheet exactly
+    row = [
+        timestamp,            # Date & Time (Timestamp)
+        pair,                 # Instrument (Pair)
+        direction,            # Direction
+        entry_price,          # Entry Price
+        "Scalp/Day/Swing",    # Trade Type (placeholder)
+        account_balance,      # Account Size
+        risk_percent,         # Risk %
+        round(account_balance * (risk_percent / 100.0), 2),  # Risk Amount ($)
+        stop_loss,            # Stop Loss Price
+        take_profit,          # Take Profit Price
+        pos_size,             # Position Size (Lots)
+        rr if rr is not None else "",    # R:R Ratio
+        setup_type,           # Main Setup
+        indicators_used,      # Indicators Used
+        market_condition,     # Market Structure / Condition
+        "",                   # Confirmation signals (free text)
+        "",                   # News Driver
+        "",                   # Expected Impact
+        "",                   # Market Sentiment
+        "",                   # Relevant Data Source
+        "",                   # Time of next news
+        emotion_before,       # Emotional State Before
+        "",                   # Emotional State During (left blank)
+        "",                   # Was trade impulsive? (Y/N)
+        "",                   # Did you follow plan? (Y/N)
+        execution_score,      # Discipline / Execution Score
+        result,               # Result
+        pnl_usd,              # PnL_USD
+        pnl_percent,          # PnL_Percent
+        final_balance,        # Final Balance
+        pips_made,            # PnL_Pips
+        quick_note,           # Notes
+        screenshot_link,      # Screenshot (URL)
+        "Feedback coming soon"  # AI_Feedback placeholder
+    ]
+
+    try:
         sheet.append_row(row)
         st.success("✅ Trade saved to Google Sheets")
-        # reset steps to 1 for next entry
-        st.session_state.step = 1
+    except Exception as e:
+        st.error("Failed to write to sheet: " + str(e))
+
+    # reset some fields (keep account balance for convenience)
+    if 'pair' in locals():
+        st.experimental_rerun()
