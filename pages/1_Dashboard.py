@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Velor Dashboard", page_icon="📊", layout="centered")
 
 SECRETS_KEY = "gcp_service_account"
-SHEET_NAME = "Velor_Trading_Journal"
+SHEET_NAME = "Velor_Tading_Journal"
 
 # Auth
 scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
