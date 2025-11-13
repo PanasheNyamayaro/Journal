@@ -7,7 +7,7 @@ from google.oauth2.service_account import Credentials
 st.set_page_config(page_title="Velor Review", page_icon="📝", layout="centered")
 
 SECRETS_KEY = "gcp_service_account"
-SHEET_NAME = "Velor_Trading_Journal"
+SHEET_NAME = "Velor_Tading_Journal"
 
 # Auth
 scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
