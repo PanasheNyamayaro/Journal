@@ -12,7 +12,7 @@ import math
 st.set_page_config(page_title="Velor Journal", page_icon="📒", layout="centered")
 
 # ---------- CONFIG ----------
-SHEET_NAME = "Velor_Trading_Journal"   # exact sheet title
+SHEET_NAME = "Velor_Tading_Journal"   # exact sheet title
 DRIVE_FOLDER_NAME = "Screenshot"       # exact drive folder name
 SECRETS_KEY = "gcp_service_account"    # your Streamlit secret key name
 
