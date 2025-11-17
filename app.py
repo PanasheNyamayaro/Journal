@@ -225,4 +225,4 @@ if submitted:
 
     # reset some fields (keep account balance for convenience)
     if 'pair' in locals():
-        st.experimental_rerun()
+        st.rerun()
