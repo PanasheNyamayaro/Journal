@@ -4,7 +4,7 @@ from utils.google_sheet import append_row_to_sheet
 
 st.title("Trade Log")
 
-# --- Critical Fields ---
+# --- Quick Log (Critical) ---
 st.subheader("Quick Log")
 
 instrument = st.text_input("Instrument")
@@ -20,28 +20,51 @@ risk_amount = account_size * (risk_pct / 100) if account_size and risk_pct else 
 rr = ((tp - entry) / (entry - sl)) if entry and sl and tp and (entry - sl) != 0 else 0
 position_size = (risk_amount / abs(entry - sl)) if entry and sl and risk_amount else 0
 
+# Live PnL auto calc (only if TP/SL isn't hit yet)
+# Final Balance auto calc = account_size + pnl_usd
+pnl_usd = 0  # Default. User sets Result (win/loss/breakeven), then amount is auto handled in Review page.
+pnl_pct = (pnl_usd / account_size * 100) if account_size != 0 else 0
+final_balance = account_size + pnl_usd
+
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
 st.write(f"**RR:** {rr:.2f}")
 st.write(f"**Position Size:** {position_size:.2f} units")
+st.write(f"**PnL % (auto):** {pnl_pct:.2f}%")
+st.write(f"**Final Balance (auto):** {final_balance:.2f} USD")
 
-# --- Toggle Advanced Fields ---
+# --- Advanced Fields ---
 with st.expander("Advanced Fields"):
     trade_type = st.selectbox("Trade Type", ["Market", "Limit", "Stop", "Other"])
-    session = st.selectbox("Session", ["Asian", "London", "New York", "Other"])
-    market_condition = st.text_input("Market Condition")
-    setup_type = st.text_input("Setup Type")
+
+    session = st.selectbox(
+        "Session",
+        ["Sydney", "Tokyo", "London", "London–New York Overlap", "New York"]
+    )
+
+    market_condition = st.selectbox(
+        "Market Condition",
+        ["Trending", "Ranging", "Choppy"]
+    )
+
+    setup_type = st.multiselect(
+        "Setup Type (Choose All That Apply)",
+        ["Trend Continuation", "Breakout", "Support and Resistance", 
+         "Price Imbalance", "Order Block", "Liquidity Sweep"]
+    )
+
     indicators_used = st.text_input("Indicators Used")
     execution_score = st.slider("Execution Score", 1, 10)
+
     notes = st.text_area("Notes")
     result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
-    pnl_usd = st.number_input("PnL USD", format="%.2f")
-    pnl_pct = st.number_input("PnL %", format="%.2f")
-    final_balance = st.number_input("Final Balance", format="%.2f")
+
+    news_impact = st.selectbox("News Impact", ["High", "Neutral", "Low"])
+    sentiment = st.selectbox("Sentiment", ["Risk ON", "Neutral", "Risk OFF"])
+
     emotion_before = st.text_input("Emotion Before")
     emotion_after = st.text_input("Emotion After")
     followed_plan = st.selectbox("Followed Plan", ["Yes", "No", "Partial"])
-    news_impact = st.text_input("News Impact")
-    sentiment = st.text_input("Sentiment")
+
     what_went_right = st.text_area("What Went Right")
     what_went_wrong = st.text_area("What Went Wrong")
 
@@ -62,10 +85,10 @@ if st.button("Save Trade"):
         trade_type,
         session,
         market_condition,
-        setup_type,
+        ", ".join(setup_type),
         indicators_used,
         execution_score,
-        "",  # screenshot empty
+        "",  # screenshot empty for now
         notes,
         result,
         pnl_usd,
