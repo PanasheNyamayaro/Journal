@@ -6,7 +6,8 @@ def get_sheet():
     creds_info = st.secrets["gcp_service_account"]
     creds = Credentials.from_service_account_info(
         creds_info,
-        scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        scopes=["https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"]
     )
     client = gspread.authorize(creds)
     return client.open("Velor_Tading_Journal").sheet1
