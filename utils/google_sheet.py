@@ -3,7 +3,7 @@ from google.oauth2.service_account import Credentials
 import streamlit as st
 
 def get_sheet():
-    creds_info = st.secrets["[gcp_service_account]"]
+    creds_info = st.secrets["gcp_service_account"]
     creds = Credentials.from_service_account_info(
         creds_info,
         scopes=["https://www.googleapis.com/auth/spreadsheets"]
