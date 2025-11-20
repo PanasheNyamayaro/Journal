@@ -15,4 +15,5 @@ def get_sheet():
 
 def append_row_to_sheet(row):
     sheet = get_sheet()
-    sheet.append_row(row, value_input_option="USER_ENTERED")
+    sheet.append_row(row, table_range="A1")
+
