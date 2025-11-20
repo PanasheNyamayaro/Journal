@@ -10,7 +10,7 @@ def get_sheet():
     "https://www.googleapis.com/auth/drive"]
     )
     client = gspread.authorize(creds)
-    return client.open("Velor_Trading_Journal").worksheet("Sheet1")
+    return client.open("Velor_Tading_Journal").worksheet("Sheet1")
 
 
 def append_row_to_sheet(row):
