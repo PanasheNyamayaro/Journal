@@ -4,6 +4,10 @@ import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
 
+with st.sidebar:
+    st.image("assets/logo.png", use_column_width=True)
+
+
 st.set_page_config(page_title="Velor Review", page_icon="📝", layout="centered")
 
 SECRETS_KEY = "gcp_service_account"
