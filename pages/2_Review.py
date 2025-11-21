@@ -5,7 +5,14 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 with st.sidebar:
-    st.image("assets/logo.png", use_column_width=True)
+    st.markdown(
+        """
+        <div style='text-align:center; margin-bottom:20px;'>
+            <img src='assets/logo.png' style='width:90px; border-radius:6px;' />
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 st.set_page_config(page_title="Velor Review", page_icon="📝", layout="centered")
