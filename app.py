@@ -3,7 +3,14 @@ import datetime
 from utils.google_sheet import append_row_to_sheet
 
 with st.sidebar:
-    st.image("assets/logo.png", use_column_width=True)
+    st.markdown(
+        """
+        <div style='text-align:center; margin-bottom:20px;'>
+            <img src='assets/logo.png' style='width:90px; border-radius:6px;' />
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 st.title("Trade Log")
 
