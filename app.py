@@ -1,8 +1,7 @@
 import streamlit as st
 import datetime
-#from utils.google_sheet import append_row_to_sheet
-from utils.google_sheet import get_sheet
-st.write(get_sheet().get_all_values())
+from utils.google_sheet import append_row_to_sheet
+
 
 st.title("Trade Log")
 
