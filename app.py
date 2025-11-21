@@ -2,6 +2,8 @@ import streamlit as st
 import datetime
 from utils.google_sheet import append_row_to_sheet
 
+with st.sidebar:
+    st.image("assets/logo.png", use_column_width=True)
 
 st.title("Trade Log")
 
