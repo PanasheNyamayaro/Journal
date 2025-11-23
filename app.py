@@ -12,9 +12,9 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 PIP_VALUES = {
-    "EURUSD": 10,
-    "GBPUSD": 10,
-    "USDJPY": 9.17,   # depends on price, approx
+    "EURUSD": 1,
+    "GBPUSD": 1,
+    "USDJPY": 0.917,   # depends on price, approx
     "XAUUSD": 1,      # gold = $1 per pip (0.01 move)
     "US30": 1,        # indices depend on broker, adjust
     "NAS100": 1,
