@@ -11,30 +11,66 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
+PIP_VALUES = {
+    "EURUSD": 10,
+    "GBPUSD": 10,
+    "USDJPY": 9.17,   # depends on price, approx
+    "XAUUSD": 1,      # gold = $1 per pip (0.01 move)
+    "US30": 1,        # indices depend on broker, adjust
+    "NAS100": 1,
+    "BTCUSD": 1       # crypto varies by tick size
+}
+
+def get_pip_distance(instrument, entry, sl, tp, direction):
+    pip_value = PIP_VALUES.get(instrument.upper(), 10)  # default 10
+
+    if direction == "Buy":
+        sl_distance = entry - sl
+        tp_distance = tp - entry
+
+    else:  # Sell
+        sl_distance = sl - entry
+        tp_distance = entry - tp
+
+    return sl_distance, tp_distance, pip_value
 
 st.title("Trade Log")
 
 # --- Quick Log (Critical) ---
 st.subheader("Quick Log")
 
-instrument = st.text_input("Instrument")
+instrument = st.selectbox("Instrument",["EURUSD","GBPUSD","USDJPY","XAUUSD","US30","NAS100","BTCUSD"])
 direction = st.selectbox("Direction", ["Buy", "Sell"])
 entry = st.number_input("Entry Price", min_value=0.0, format="%.5f")
 sl = st.number_input("Stop Loss", min_value=0.0, format="%.5f")
 tp = st.number_input("Take Profit", min_value=0.0, format="%.5f")
 risk_pct = st.number_input("Risk %", min_value=0.0, max_value=100.0, format="%.2f")
 account_size = st.number_input("Account Size (USD)", min_value=0.0, format="%.2f")
-
+sl_dist, tp_dist, pip_value = get_pip_distance(
+    instrument, entry, sl, tp, direction
+)
 # --- Auto Calculations ---
 risk_amount = account_size * (risk_pct / 100) if account_size and risk_pct else 0
-rr = ((tp - entry) / (entry - sl)) if entry and sl and tp and (entry - sl) != 0 else 0
-position_size = (risk_amount / abs(entry - sl)) if entry and sl and risk_amount else 0
+rr = tp_dist / sl_dist if sl_dist != 0 else 0
+
+#rr = ((tp - entry) / (entry - sl)) if entry and sl and tp and (entry - sl) != 0 else 0
+
+if sl_dist > 0:
+    position_size = risk_amount / (sl_dist * pip_value)
+else:
+    position_size = 0
+
+#position_size = (risk_amount / abs(entry - sl)) if entry and sl and risk_amount else 0
 
 # Live PnL auto calc (only if TP/SL isn't hit yet)
 # Final Balance auto calc = account_size + pnl_usd
 pnl_usd = 0  # Default. User sets Result (win/loss/breakeven), then amount is auto handled in Review page.
 pnl_pct = (pnl_usd / account_size * 100) if account_size != 0 else 0
 final_balance = account_size + pnl_usd
+result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
+if result == "Win" & direction == "Buy":
+    pnl_usd = rr * risk_ammount
+elif result == "Loss" 
 
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
 st.write(f"**RR:** {rr:.2f}")
@@ -66,7 +102,6 @@ with st.expander("Advanced Fields"):
     execution_score = st.slider("Execution Score", 1, 10)
 
     notes = st.text_area("Notes")
-    result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
 
     news_impact = st.selectbox("News Impact", ["High", "Neutral", "Low"])
     sentiment = st.selectbox("Sentiment", ["Risk ON", "Neutral", "Risk OFF"])
