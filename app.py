@@ -77,6 +77,7 @@ elif result == "Loss":
     pnl_usd = risk_amount 
 else:
     pnl_usd = pnl_usd
+st.write(pnl_usd)
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
 st.write(f"**RR:** {rr:.2f}")
 st.write(f"**Position Size:** {position_size:.2f} units")
