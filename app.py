@@ -46,6 +46,8 @@ sl = st.number_input("Stop Loss", min_value=0.0, format="%.5f")
 tp = st.number_input("Take Profit", min_value=0.0, format="%.5f")
 risk_pct = st.number_input("Risk %", min_value=0.0, max_value=100.0, format="%.2f")
 account_size = st.number_input("Account Size (USD)", min_value=0.0, format="%.2f")
+swap = st.number_input("Swap", format="%.2f")
+commision = st.number_input("Commision", format="%.2f")
 sl_dist, tp_dist, pip_value = get_pip_distance(
     instrument, entry, sl, tp, direction
 )
@@ -68,10 +70,12 @@ pnl_usd = 0  # Default. User sets Result (win/loss/breakeven), then amount is au
 pnl_pct = (pnl_usd / account_size * 100) if account_size != 0 else 0
 final_balance = account_size + pnl_usd
 result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
-if result == "Win" & direction == "Buy":
-    pnl_usd = rr * risk_ammount
-elif result == "Loss" 
-
+if result == "Win":
+    pnl_usd = position_size * tp
+elif result == "Loss":
+    pnl_usd = risk_amount 
+else:
+    pnl_usd = pnl_usd
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
 st.write(f"**RR:** {rr:.2f}")
 st.write(f"**Position Size:** {position_size:.2f} units")
