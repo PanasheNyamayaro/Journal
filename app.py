@@ -27,8 +27,8 @@ def get_pip_distance(instrument, entry, sl, tp, direction):
     if direction == "Buy":
         sl_distancee = entry - sl
         tp_distancee = tp - entry
-        sl_distance = round(sl_distancee,1)
-        tp_distance = round(tp_distancee,1)
+        sl_distance = round(sl_distancee,2)
+        tp_distance = round(tp_distancee,2)
     else:  # Sell
         sl_distance = sl - entry
         tp_distance = entry - tp
