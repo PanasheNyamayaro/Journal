@@ -48,9 +48,13 @@ risk_pct = st.number_input("Risk %", min_value=0.0, max_value=100.0, format="%.2
 account_size = st.number_input("Account Size (USD)", min_value=0.0, format="%.2f")
 swap = st.number_input("Swap", format="%.2f")
 commision = st.number_input("Commision", format="%.2f")
+
 sl_dist, tp_dist, pip_value = get_pip_distance(
     instrument, entry, sl, tp, direction
 )
+
+st.write(sl_dist)
+
 # --- Auto Calculations ---
 risk_amount = account_size * (risk_pct / 100) if account_size and risk_pct else 0
 rr = tp_dist / sl_dist if sl_dist != 0 else 0
