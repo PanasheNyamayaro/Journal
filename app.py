@@ -61,6 +61,7 @@ if sl_dist > 0:
     position_size = risk_amount / (sl_dist * pip_value)
 else:
     position_size = 0
+st.write(position_size)
 
 #position_size = (risk_amount / abs(entry - sl)) if entry and sl and risk_amount else 0
 
@@ -69,7 +70,10 @@ else:
 pnl_usd = 0  # Default. User sets Result (win/loss/breakeven), then amount is auto handled in Review page.
 pnl_pct = (pnl_usd / account_size * 100) if account_size != 0 else 0
 final_balance = account_size + pnl_usd
+
 st.write(final_balance)
+
+
 result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
 if result == "Win":
     pnl_usd = position_size * tp
@@ -77,7 +81,9 @@ elif result == "Loss":
     pnl_usd = risk_amount 
 else:
     pnl_usd = pnl_usd
+    
 st.write(pnl_usd)
+
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
 st.write(f"**RR:** {rr:.2f}")
 st.write(f"**Position Size:** {position_size:.2f} units")
