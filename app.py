@@ -22,7 +22,7 @@ PIP_VALUES = {
 }
 
 def get_pip_distance(instrument, entry, sl, tp, direction):
-    pip_value = PIP_VALUES.get(instrument.upper(), 10)  # default 10
+    pip_value = PIP_VALUES.get(instrument.upper(), 1)  # default 10
 
     if direction == "Buy":
         sl_distance = entry - sl
@@ -52,7 +52,7 @@ sl_dist, tp_dist, pip_value = get_pip_distance(
     instrument, entry, sl, tp, direction
 )
 
-st.write(sl_dist)
+st.write(sl_dist * 1000)
 
 # --- Auto Calculations ---
 risk_amount = account_size * (risk_pct / 100) if account_size and risk_pct else 0
