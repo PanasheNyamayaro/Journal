@@ -71,7 +71,7 @@ st.write(position_size)
 # Live PnL auto calc (only if TP/SL isn't hit yet)
 # Final Balance auto calc = account_size + pnl_usd
 pnl_usd = 0  # Default. User sets Result (win/loss/breakeven), then amount is auto handled in Review page.
-pnl_pct = (pnl_usd / account_size * 100) if account_size != 0 else 0
+pnl_pct = (pnl_usd / account_size) * 100 if account_size != 0 else 0
 final_balance = account_size + pnl_usd
 
 st.write(final_balance)
