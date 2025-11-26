@@ -78,7 +78,7 @@ result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
 if result == "Win":
     pnl_usd = risk_amount * rr
 elif result == "Loss":
-    pnl_usd = risk_amount 
+    pnl_usd = -risk_amount 
 else:
     pnl_usd = pnl_usd
 final_balance = account_size + pnl_usd  
