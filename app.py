@@ -79,7 +79,7 @@ st.write(final_balance)
 
 result = st.selectbox("Result", ["Win", "Loss", "Break Even"])
 if result == "Win":
-    pnl_usd = position_size * tp
+    pnl_usd = risk_amount * rr
 elif result == "Loss":
     pnl_usd = risk_amount 
 else:
