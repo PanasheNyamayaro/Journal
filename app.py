@@ -52,7 +52,7 @@ sl_dist, tp_dist, pip_value = get_pip_distance(
     instrument, entry, sl, tp, direction
 )
 
-st.write(sl_dist * 1000)
+st.write(sl_dist)
 
 # --- Auto Calculations ---
 risk_amount = account_size * (risk_pct / 100) if account_size and risk_pct else 0
