@@ -48,6 +48,9 @@ account_size = st.number_input("Account Size (USD)", min_value=0.0, format="%.2f
 swap = st.number_input("Swap", format="%.2f")
 commision = st.number_input("Commision", format="%.2f")
 
+st.write(entry)
+
+
 sl_dist, tp_dist, pip_value = get_pip_distance(
     instrument, entry, sl, tp, direction
 )
