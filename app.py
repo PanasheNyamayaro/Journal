@@ -94,6 +94,12 @@ st.write(f"**Position Size:** {position_size:.2f} units")
 st.write(f"**PnL % (auto):** {pnl_pct:.2f}%")
 st.write(f"**Final Balance (auto):** {final_balance:.2f} USD")
 
+uploaded_file = st.file_uploader(
+    "Upload Screenshot",
+    type=["png", "jpg", "jpeg"]
+)
+
+
 # --- Advanced Fields ---
 with st.expander("Advanced Fields"):
     trade_type = st.selectbox("Trade Type", ["Market", "Limit", "Stop", "Other"])
