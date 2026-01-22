@@ -130,6 +130,7 @@ uploaded_file = st.file_uploader(
     "Upload Screenshot",
     type=["png", "jpg", "jpeg"]
 )
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 screenshot_url = ""
 if uploaded_file:
