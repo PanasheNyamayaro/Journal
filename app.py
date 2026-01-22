@@ -132,7 +132,7 @@ uploaded_file = st.file_uploader(
 )
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-DRIVE_FOLDER_ID = "1PO-OW1XBz03RfAk9a67Q_3auNjTFP4RH?usp=drive_link"
+DRIVE_FOLDER_ID = "1PO-OW1XBz03RfAk9a67Q_3auNjTFP4RH"
 
 screenshot_url = ""
 if uploaded_file:
