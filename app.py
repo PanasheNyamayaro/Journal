@@ -89,35 +89,6 @@ else:
 final_balance = account_size + pnl_usd 
 pnl_pct = (pnl_usd / account_size) * 100 if account_size != 0 else 0
 
-def upload_to_drive(file, filename, folder_id):
-    creds = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=["https://www.googleapis.com/auth/drive"]
-    )
-
-    service = build("drive", "v3", credentials=creds)
-
-    file_metadata = {
-        "name": filename,
-        "parents": [folder_id]
-    }
-
-    media = MediaIoBaseUpload(
-        io.BytesIO(file.getbuffer()),
-        mimetype=file.type
-    )
-
-    uploaded = service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields="id"
-    ).execute()
-
-    file_id = uploaded["id"]
-
-    return f"https://drive.google.com/file/d/{file_id}/view"
-
-
 st.write(pnl_usd)
 st.write(final_balance)
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
