@@ -174,5 +174,5 @@ ai_feedback = generate_ai_feedback(row)
 st.subheader("AI Feedback")
 st.write(ai_feedback)
 
-    append_row_to_sheet(row)
-    st.success("Trade saved!")
+append_row_to_sheet(row)
+st.success("Trade saved!")
