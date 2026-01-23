@@ -12,7 +12,7 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def generate_ai_feedback(trade_data: dict) -> str:
+def generate_ai_feedback(row: dict) -> str:
     """
     trade_data: dictionary of one trade
     returns: AI feedback text
