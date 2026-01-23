@@ -14,7 +14,7 @@ HEADERS = {
 
 def generate_ai_feedback(row: dict) -> str:
     """
-    trade_data: dictionary of one trade
+    row: dictionary of one trade
     returns: AI feedback text
     """
 
@@ -29,7 +29,7 @@ Focus on:
 - One improvement action
 
 Trade details:
-{trade_data}
+{row}
 
 Respond in under 120 words.
 """
