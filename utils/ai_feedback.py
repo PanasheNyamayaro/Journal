@@ -12,9 +12,9 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def generate_ai_feedback(row: dict) -> str:
+def generate_ai_feedback(trade_data: dict) -> str:
     """
-    row: dictionary of one trade
+    trade_data: dictionary of one trade
     returns: AI feedback text
     """
 
@@ -29,7 +29,7 @@ Focus on:
 - One improvement action
 
 Trade details:
-{row}
+{trade_data}
 
 Respond in under 120 words.
 """
@@ -50,5 +50,3 @@ Respond in under 120 words.
     result = response.json()
 
     return result[0]["generated_text"].strip()
-
-
