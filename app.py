@@ -196,6 +196,9 @@ trade_data = {
     "What Went Wrong": what_went_wrong
 }
 
+append_row_to_sheet(row)
+st.success("Trade saved!")
+
 ai_feedback = generate_ai_feedback(trade_data)
 st.subheader("AI Feedback")
 st.write(ai_feedback)
@@ -204,5 +207,3 @@ row.append(ai_feedback)
 append_row_to_sheet(row)
 
 
-append_row_to_sheet(row)
-st.success("Trade saved!")
