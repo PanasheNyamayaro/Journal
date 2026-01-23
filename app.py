@@ -7,7 +7,7 @@ from googleapiclient.http import MediaIoBaseUpload
 from google.oauth2 import service_account
 import io
 from utils.google_sheet import append_row_to_sheet
-from ai_feedback import generate_ai_feedback
+from utils.ai_feedback import generate_ai_feedback
 
 
 
