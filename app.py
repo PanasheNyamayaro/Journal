@@ -168,6 +168,7 @@ if st.button("Save Trade"):
         sentiment,
         what_went_right,
         what_went_wrong,
+        ai_feedback
     ]
 
 trade_data = {
