@@ -126,23 +126,6 @@ st.write(f"**Position Size:** {position_size:.2f} units")
 st.write(f"**PnL % (auto):** {pnl_pct:.2f}%")
 st.write(f"**Final Balance (auto):** {final_balance:.2f} USD")
 
-uploaded_file = st.file_uploader(
-    "Upload Screenshot",
-    type=["png", "jpg", "jpeg"]
-)
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-DRIVE_FOLDER_ID = "1PO-OW1XBz03RfAk9a67Q_3auNjTFP4RH"
-
-screenshot_url = ""
-if uploaded_file:
-    screenshot_url = upload_to_drive(
-        uploaded_file,
-        f"{timestamp}_{instrument}.png",
-        DRIVE_FOLDER_ID
-    )
-
-
 
 # --- Advanced Fields ---
 with st.expander("Advanced Fields"):
