@@ -170,6 +170,8 @@ if st.button("Save Trade"):
         what_went_wrong,
         ai_feedback
     ]
+append_row_to_sheet(row)
+st.success("Trade saved!")
 
 trade_data = {
     "Instrument": instrument,
@@ -195,9 +197,6 @@ trade_data = {
     "Followed Plan": followed_plan,
     "What Went Wrong": what_went_wrong
 }
-
-append_row_to_sheet(row)
-st.success("Trade saved!")
 
 ai_feedback = generate_ai_feedback(trade_data)
 st.subheader("AI Feedback")
