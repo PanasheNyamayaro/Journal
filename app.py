@@ -95,7 +95,12 @@ pnl_pct = (pnl_usd / account_size) * 100 if account_size != 0 else 0
 
 st.write(pnl_usd)
 st.write(final_balance)
+
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
+if risk_pct > 5:
+    st.warning("Risk is too high.",icon = ⚠️)
+else:
+    st.write("")
 st.write(f"**RR:** {rr:.2f}")
 st.write(f"**Position Size:** {position_size:.2f} units")
 st.write(f"**PnL % (auto):** {pnl_pct:.2f}%")
