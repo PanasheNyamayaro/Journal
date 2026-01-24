@@ -98,7 +98,7 @@ st.write(final_balance)
 
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
 if risk_pct > 5:
-    st.warning("Risk is too high.",icon = ⚠️)
+    st.warning(f"{risk_amount}% risk is too high.",icon = "⚠️")
 else:
     st.write("")
 st.write(f"**RR:** {rr:.2f}")
