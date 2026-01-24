@@ -57,7 +57,7 @@ risk_pct = st.number_input("Risk %", min_value=0.0, max_value=100.0, format="%.2
 if risk_pct > 5:
     st.warning(f"{risk_pct}% risk is too high.",icon = "⚠️")
 else:
-    break
+    'break'
 account_size = st.number_input("Account Size (USD)", min_value=0.0, format="%.2f")
 swap = st.number_input("Swap", format="%.2f")
 commision = st.number_input("Commision", format="%.2f")
