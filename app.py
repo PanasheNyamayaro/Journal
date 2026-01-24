@@ -170,7 +170,7 @@ if st.button("Save Trade"):
     }
 
     ai_feedback = generate_ai_feedback(trade_data)
-
+    st.write(ai_feedback)
     row = [
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         instrument,
