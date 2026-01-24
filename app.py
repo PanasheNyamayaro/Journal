@@ -206,7 +206,7 @@ if st.button("Save Trade"):
         ai_feedback
     ]
 
-    append_row_to_sheet(row)
+    append_row_to_sheet(trade_data)
 
     st.subheader("AI Feedback")
     st.write(ai_feedback)
