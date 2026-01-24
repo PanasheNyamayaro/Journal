@@ -54,6 +54,10 @@ entry = st.number_input("Entry Price", min_value=0.0, format="%.5f")
 sl = st.number_input("Stop Loss", min_value=0.0, format="%.5f")
 tp = st.number_input("Take Profit", min_value=0.0, format="%.5f")
 risk_pct = st.number_input("Risk %", min_value=0.0, max_value=100.0, format="%.2f")
+if risk_pct > 5:
+    st.warning(f"{risk_amount}% risk is too high.",icon = "⚠️")
+else:
+    st.write("")
 account_size = st.number_input("Account Size (USD)", min_value=0.0, format="%.2f")
 swap = st.number_input("Swap", format="%.2f")
 commision = st.number_input("Commision", format="%.2f")
@@ -97,10 +101,6 @@ st.write(pnl_usd)
 st.write(final_balance)
 
 st.write(f"**Risk Amount:** {risk_amount:.2f} USD")
-if risk_pct > 5:
-    st.warning(f"{risk_amount}% risk is too high.",icon = "⚠️")
-else:
-    st.write("")
 st.write(f"**RR:** {rr:.2f}")
 st.write(f"**Position Size:** {position_size:.2f} units")
 st.write(f"**PnL % (auto):** {pnl_pct:.2f}%")
