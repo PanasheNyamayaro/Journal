@@ -7,7 +7,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-SHEET_NAME = "Velor_Trading_Journal"
+SHEET_NAME = "Velor_Tading_Journal"
 WORKSHEET_NAME = "Sheet1"
 
 def get_sheet():
