@@ -141,9 +141,6 @@ with st.expander("Advanced Fields"):
 
 # --- Save Button ---
 if st.button("Save Trade"):
-
-     if st.button("Save Trade"):
-
     row = [
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         instrument,
