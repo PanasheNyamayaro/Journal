@@ -6,7 +6,7 @@ import streamlit as st
 MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 HF_API_TOKEN = st.secrets["huggingface"]["HF_API_TOKEN"]
 
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
+API_URL = f"https://router.huggingface.co/models/{MODEL}"
 
 HEADERS = {
     "Authorization": f"Bearer {HF_API_TOKEN}",
