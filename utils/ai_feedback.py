@@ -1,10 +1,10 @@
 # ai_feedback.py
 import os
 import requests
-import stremlit as st
+import streamlit as st
 
-MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
-HF_API_TOKEN = os.getenv("HF_API_TOKEN")
+MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+HF_API_TOKEN = st.secrets("HF_API_TOKEN")
 
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 
