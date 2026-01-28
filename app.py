@@ -138,7 +138,9 @@ with st.expander("Advanced Fields"):
 
     what_went_right = st.text_area("What Went Right")
     what_went_wrong = st.text_area("What Went Wrong")
-
+if st.button("AI feedback"):
+    trade_data = { "Instrument": instrument, "Direction": direction, "Entry": entry, "Stop Loss": sl, "Take Profit": tp, "Risk %": risk_pct, "RR": rr, "Account Size": account_size, "Risk Amount": risk_amount, "Position Size": position_size, "Result": result, "PnL USD": pnl_usd, "PnL %": pnl_pct, "Final Balance": final_balance, "Session": session, "Market Condition": market_condition, "Setup Type": setup_type, "Execution Score": execution_score, "Emotion Before": emotion_before, "Emotion After": emotion_after, "Followed Plan": followed_plan, "What Went Wrong": what_went_wrong }
+    ai_feedback = generate_ai_feedback(trade_data)
 # --- Save Button ---
 if st.button("Save Trade"):
     row = [
@@ -172,7 +174,7 @@ if st.button("Save Trade"):
         sentiment,
         what_went_right,
         what_went_wrong,
-        ""   # AI feedback placeholder
+        ai_feedback   # AI feedback placeholder
     ]
 
     append_row_to_sheet(row)
