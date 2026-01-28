@@ -1,6 +1,7 @@
 # ai_feedback.py
 import os
 import requests
+import stremlit as st
 
 MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
