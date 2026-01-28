@@ -3,7 +3,7 @@ import os
 import requests
 import streamlit as st
 
-MODEL = "google/flan-t5-base"
+MODEL = "meta-llama/Llama-3.2-1B-Instruct"
 HF_API_TOKEN = st.secrets["huggingface"]["HF_API_TOKEN"]
 
 API_URL = f"https://router.huggingface.co/models/{MODEL}"
