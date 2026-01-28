@@ -44,8 +44,8 @@ Respond in under 120 words.
     }
 
     response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=60)
-resc = response.status_code
-st.write(resc)
+    resc = response.status_code
+    st.write(resc)
     if response.status_code != 200:
         return "AI feedback unavailable."
 
