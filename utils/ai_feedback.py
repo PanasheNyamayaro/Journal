@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 
 MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-HF_API_TOKEN = st.secrets["HF_API_TOKEN"]
+HF_API_TOKEN = st.secrets["huggingface"]
 
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 
