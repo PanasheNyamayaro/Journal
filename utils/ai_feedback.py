@@ -3,7 +3,7 @@ import os
 import requests
 import streamlit as st
 
-MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+MODEL = "google/flan-t5-small"
 HF_API_TOKEN = st.secrets["huggingface"]["HF_API_TOKEN"]
 
 API_URL = f"https://router.huggingface.co/models/{MODEL}"
