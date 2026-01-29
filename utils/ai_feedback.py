@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 
 MODEL = "meta-llama/Llama-3.2-1B-Instruct"
-HF_API_TOKEN = st.secrets["huggingface"]["HF_API_TOKEN"]
+HF_API_TOKEN = st.secrets["huggingface"]
 
 API_URL = f"https://router.huggingface.co/models/{MODEL}"
 
