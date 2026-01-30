@@ -175,7 +175,7 @@ if st.button("Save Trade"):
         sentiment,
         what_went_right,
         what_went_wrong,
-        ai_feedback   # AI feedback placeholder
+        ""   # AI feedback placeholder
     ]
 
     append_row_to_sheet(row)
