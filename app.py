@@ -10,14 +10,11 @@ from utils.ai_feedback import generate_ai_feedback
 
 
 
-with st.sidebar:
-    st.markdown(
-        """
-        <div style='text-align:center; margin-bottom:20px;'>
-            <img src='assets/logo.png' style='width:90px; border-radius:6px;' />
-        </div>
-        """,
-        unsafe_allow_html=True
+email = st.text_input("Enter your email to access your journal")
+
+if not email:
+    st.stop()
+
     )
 PIP_VALUES = {
     "EURUSD": 1,
