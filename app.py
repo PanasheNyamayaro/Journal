@@ -37,6 +37,50 @@ st.title("Trade Log")
 st.subheader("Quick Log")
 
 instrument = st.selectbox("Instrument",["EURUSD","GBPUSD","USDJPY","XAUUSD","US30","NAS100","BTCUSD"])
+import datetime
+import pytz
+
+def get_active_sessions():
+    # 1. Get current time in UTC
+    now_utc = datetime.datetime.now(pytz.utc)
+    
+    # 2. Define Session Hours in UTC (Standard Times)
+    # Note: These may vary slightly based on seasonal DST shifts.
+    sessions = {
+        "Sydney": {"open": 21, "close": 6},  # 9 PM - 6 AM UTC
+        "Tokyo":  {"open": 0,  "close": 9},  # 12 AM - 9 AM UTC
+        "London": {"open": 7,  "close": 16}, # 7 AM - 4 PM UTC
+        "New York": {"open": 13, "close": 22} # 1 PM - 10 PM UTC
+    }
+    
+    active = []
+    
+    # 3. Check for Weekends (Trading is generally closed Sat/Sun)
+    if now_utc.weekday() >= 5:
+        return ["Market Closed (Weekend)"]
+
+    current_hour = now_utc.hour
+    
+    for name, hours in sessions.items():
+        start = hours["open"]
+        end = hours["close"]
+        
+        # Handle sessions that cross midnight (e.g., Sydney)
+        if start > end:
+            if current_hour >= start or current_hour < end:
+                active.append(name)
+        else:
+            if start <= current_hour < end:
+                active.append(name)
+                
+    return active if active else ["No major sessions active"]
+st.write(active)
+
+# Output results
+current_active = get_active_sessions()
+print(f"Current UTC Time: {datetime.datetime.now(pytz.utc).strftime('%H:%M')}")
+print(f"Active Sessions: {', '.join(current_active)}")
+
 direction = st.selectbox("Direction", ["Buy", "Sell"])
 entry = st.number_input("Entry Price", min_value=0.0, format="%.5f")
 sl = st.number_input("Stop Loss", min_value=0.0, format="%.5f")
