@@ -7,6 +7,9 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from utils.google_sheet import append_row_to_sheet
 from utils.ai_feedback import generate_ai_feedback
+import datetime
+import pytz
+
 
 
 PIP_VALUES = {
@@ -37,8 +40,7 @@ st.title("Trade Log")
 st.subheader("Quick Log")
 
 instrument = st.selectbox("Instrument",["EURUSD","GBPUSD","USDJPY","XAUUSD","US30","NAS100","BTCUSD"])
-import datetime
-import pytz
+
 
 def get_active_sessions():
     # 1. Get current time in UTC
