@@ -76,12 +76,12 @@ def get_active_sessions():
                 active.append(name)
                 
     return active if active else ["No major sessions active"]
-st.write(active)
+
 
 # Output results
 current_active = get_active_sessions()
 print(f"Current UTC Time: {datetime.datetime.now(pytz.utc).strftime('%H:%M')}")
-print(f"Active Sessions: {', '.join(current_active)}")
+st.write(f"Active Sessions: {', '.join(current_active)}")
 
 direction = st.selectbox("Direction", ["Buy", "Sell"])
 entry = st.number_input("Entry Price", min_value=0.0, format="%.5f")
