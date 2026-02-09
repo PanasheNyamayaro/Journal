@@ -6,7 +6,7 @@ import streamlit as st
 MODEL = "Qwen/Qwen2.5-7B-Instruct"
 HF_API_TOKEN = st.secrets["huggingface"]
 
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
+API_URL = f"https://router.huggingface.co/models/{MODEL}"
 
 HEADERS = {
     "Authorization": f"Bearer {HF_API_TOKEN}",
