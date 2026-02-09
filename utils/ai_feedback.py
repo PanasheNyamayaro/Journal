@@ -1,37 +1,23 @@
 # ai_feedback.py
-import os
-import requests
+from huggingface_hub import InferenceClient
 import streamlit as st
 
-MODEL = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+# 1. Access secret
 HF_API_TOKEN = st.secrets["huggingface"]
 
-API_URL = f"https://router.huggingface.co/models/{MODEL}"
-
-HEADERS = {
-    "Authorization": f"Bearer {HF_API_TOKEN}",
-    "Content-Type": "application/json"
-}
+# 2. Setup Client (No URL needed!)
+client = InferenceClient(api_key=HF_API_TOKEN)
 
 def generate_ai_feedback(trade_data: dict) -> str:
-    # ... (Keep your prompt logic here)
-
-    # NEW: Chat-style payload
-    payload = {
-        "model": MODEL, # Move model name inside the payload
-        "messages": [
-            {"role": "system", "content": "You are a professional trading coach."},
-            {"role": "user", "content": f"Analyze this trade data: {trade_data}"}
-        ],
-        "max_tokens": 200,
-        "temperature": 0.4
-    }
-
-    response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=60)
+    prompt = f"You are a professional forex trader analyse this trade and give feedback in less than 60 words: {trade_data}"
     
-    if response.status_code != 200:
-        return f"Error {response.status_code}: {response.text}"
-
-    # NEW: Nested response structure
-    result = response.json()
-    return result["choices"][0]["message"]["content"].strip()
+    try:
+        # 3. Simple call that works exactly like Colab
+        response = client.chat.completions.create(
+            model="Qwen/Qwen2.5-7B-Instruct",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=200
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Connection Error: {e}"
