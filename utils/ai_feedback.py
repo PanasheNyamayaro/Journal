@@ -3,7 +3,7 @@ import os
 import requests
 import streamlit as st
 
-MODEL = "Qwen/Qwen2.5-7B-Instruct"
+MODEL = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
 HF_API_TOKEN = st.secrets["huggingface"]
 
 API_URL = f"https://router.huggingface.co/models/{MODEL}"
