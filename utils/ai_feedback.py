@@ -6,7 +6,7 @@ import streamlit as st
 MODEL = "Qwen/Qwen2.5-7B-Instruct"
 HF_API_TOKEN = st.secrets["huggingface"]
 
-API_URL = f"https://router.huggingface.co{MODEL}"
+API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 
 HEADERS = {
     "Authorization": f"Bearer {HF_API_TOKEN}",
@@ -14,41 +14,24 @@ HEADERS = {
 }
 
 def generate_ai_feedback(trade_data: dict) -> str:
-    """
-    trade_data: dictionary of one trade
-    returns: AI feedback text
-    """
+    # ... (Keep your prompt logic here)
 
-    prompt = f"""
-You are a professional trading coach.
-
-Analyze this trade and give short, direct feedback.
-Focus on:
-- Risk management
-- Execution quality
-- Emotional discipline
-- One improvement action
-
-Trade details:
-{trade_data}
-
-Respond in under 120 words.
-"""
-
+    # NEW: Chat-style payload
     payload = {
-        "inputs": prompt,
-        "parameters": {
-            "temperature": 0.4,
-            "max_new_tokens": 200
-        }
+        "model": MODEL, # Move model name inside the payload
+        "messages": [
+            {"role": "system", "content": "You are a professional trading coach."},
+            {"role": "user", "content": f"Analyze this trade data: {trade_data}"}
+        ],
+        "max_tokens": 200,
+        "temperature": 0.4
     }
 
     response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=60)
-    resc = response.status_code
-    st.write(resc)
+    
     if response.status_code != 200:
-        return "AI feedback unavailable."
+        return f"Error {response.status_code}: {response.text}"
 
+    # NEW: Nested response structure
     result = response.json()
-
-    return result[0]["generated_text"].strip()
+    return result["choices"][0]["message"]["content"].strip()
