@@ -9,13 +9,6 @@ from utils.google_sheet import append_row_to_sheet
 from utils.ai_feedback import generate_ai_feedback
 
 
-
-email = st.text_input("Enter your email to access your journal")
-
-if not email:
-    st.stop()
-
-    )
 PIP_VALUES = {
     "EURUSD": 1,
     "GBPUSD": 1,
