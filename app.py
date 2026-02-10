@@ -7,10 +7,11 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from utils.google_sheet import append_row_to_sheet
 from utils.ai_feedback import generate_ai_feedback
+from assets import logo.png
 import datetime
 import pytz
 
-
+st.logo("logo.png")
 
 PIP_VALUES = {
     "EURUSD": 1,
