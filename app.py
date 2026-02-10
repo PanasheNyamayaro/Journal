@@ -15,13 +15,12 @@ import streamlit as st
 # Inject custom CSS to resize the logo
 st.html("""
     <style>
-        /* Target the image inside the logo container */
-        [data-testid="stLogo"] img {
-            height: 12rem !important; /* Increase this as needed */
-            width: auto !important;
+        img[alt="Logo"] {
+            height: 10rem !important;
         }
     </style>
 """)
+
 
 st.logo("logo.png")
 
