@@ -16,7 +16,7 @@ import streamlit as st
 st.html("""
     <style>
         img[alt="Logo"] {
-            height: 10rem !important;
+            height:6rem !important;
         }
     </style>
 """)
