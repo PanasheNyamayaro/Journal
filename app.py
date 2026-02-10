@@ -10,19 +10,10 @@ from utils.ai_feedback import generate_ai_feedback
 import datetime
 import pytz
 
+# Inject custom CSS to resize the log
 
-# Inject custom CSS to resize the logo
-st.html("""
-    <style>
-        [data-testid="stLogo"] {
-            height: 50rem; /* Adjust this value to make it bigger */
-            width: auto;
-        }
-    </style>
-""")
-
-st.logo("logo.png")
-
+# This puts a standard, resizable image at the very top of the sidebar
+st.sidebar.image("logo.png", width=200) # Set any pixel width you like
 
 PIP_VALUES = {
     "EURUSD": 1,
