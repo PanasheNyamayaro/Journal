@@ -10,7 +10,7 @@ from utils.ai_feedback import generate_ai_feedback
 import datetime
 import pytz
 
-st.logo("logo.png",size = "small")
+st.logo("logo.png",size = "Large")
 
 PIP_VALUES = {
     "EURUSD": 1,
