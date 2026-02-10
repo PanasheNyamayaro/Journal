@@ -16,8 +16,8 @@ import streamlit as st
 st.html("""
     <style>
         [data-testid="stLogo"] {
-            height: 20rem; /* Adjust this value to make it bigger */
-            width: 200;
+            height: 50rem; /* Adjust this value to make it bigger */
+            width: auto;
         }
     </style>
 """)
