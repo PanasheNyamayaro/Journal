@@ -10,7 +10,6 @@ from utils.ai_feedback import generate_ai_feedback
 import datetime
 import pytz
 
-import streamlit as st
 
 # Inject custom CSS to resize the logo
 st.html("""
