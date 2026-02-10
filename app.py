@@ -10,10 +10,20 @@ from utils.ai_feedback import generate_ai_feedback
 import datetime
 import pytz
 
-# Inject custom CSS to resize the log
+import streamlit as st
 
-# This puts a standard, resizable image at the very top of the sidebar
-st.sidebar.image("logo.png", width=20) # Set any pixel width you like
+# Inject custom CSS to resize the logo
+st.html("""
+    <style>
+        [data-testid="stLogo"] {
+            height: 5rem; /* Adjust this value to make it bigger */
+            width: auto;
+        }
+    </style>
+""")
+
+st.logo("logo.png")
+
 
 PIP_VALUES = {
     "EURUSD": 1,
