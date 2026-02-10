@@ -17,7 +17,7 @@ st.html("""
     <style>
         [data-testid="stLogo"] {
             height: 20rem; /* Adjust this value to make it bigger */
-            width: auto;
+            width: 200;
         }
     </style>
 """)
