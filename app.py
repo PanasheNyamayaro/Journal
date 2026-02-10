@@ -64,7 +64,7 @@ def get_active_sessions():
     sessions = {
         "Sydney": {"open": 21, "close": 6},  # 9 PM - 6 AM UTC
         "Tokyo":  {"open": 0,  "close": 9},  # 12 AM - 9 AM UTC
-        "London": {"open": 7,  "close": 16}, # 7 AM - 4 PM UTC
+        "London": {"open": 8,  "close": 16}, # 7 AM - 4 PM UTC
         "New York": {"open": 13, "close": 22} # 1 PM - 10 PM UTC
     }
     
