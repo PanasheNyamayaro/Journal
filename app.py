@@ -13,7 +13,7 @@ import pytz
 # Inject custom CSS to resize the log
 
 # This puts a standard, resizable image at the very top of the sidebar
-st.sidebar.image("logo.png", width=200) # Set any pixel width you like
+st.sidebar.image("logo.png", width=20) # Set any pixel width you like
 
 PIP_VALUES = {
     "EURUSD": 1,
