@@ -10,7 +10,20 @@ from utils.ai_feedback import generate_ai_feedback
 import datetime
 import pytz
 
-st.logo("logo.png",size = "Large")
+import streamlit as st
+
+# Inject custom CSS to resize the logo
+st.html("""
+    <style>
+        [data-testid="stLogo"] {
+            height: 5rem; /* Adjust this value to make it bigger */
+            width: auto;
+        }
+    </style>
+""")
+
+st.logo("logo.png")
+
 
 PIP_VALUES = {
     "EURUSD": 1,
