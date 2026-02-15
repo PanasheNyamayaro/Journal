@@ -4,15 +4,16 @@ import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
 
-with st.sidebar:
-    st.markdown(
-        """
-        <div style='text-align:center; margin-bottom:20px;'>
-            <img src='assets/logo.png' style='width:90px; border-radius:6px;' />
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+st.html("""
+    <style>
+        img[alt="Logo"] {
+            height:6rem !important;
+        }
+    </style>
+""")
+
+
+st.logo("logo.png")
 
 
 st.set_page_config(page_title="Velor Review", page_icon="📝", layout="centered")
