@@ -1,4 +1,3 @@
-#updated code , just so that you know whats happening:
 
 import streamlit as st
 import datetime
