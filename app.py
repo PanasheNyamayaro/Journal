@@ -24,15 +24,11 @@ def show_login_page():
 if not st.experimental_user.is_logged_in:
     show_login_page()
     st.stop()  # Hides everything below this line until login is successful
-
+show_login_page()
 # --- Main App Starts Here ---
 st.title("Welcome to your Dashboard")
 # Rest of your trading journal code...
 
-
-
-# --- Main App Starts Here ---
-st.title("Welcome to your Dashboard")
 
 # Inject custom CSS to resize the logo
 st.html("""
