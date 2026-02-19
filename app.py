@@ -10,6 +10,25 @@ import datetime
 import pytz
 
 # Function to display a clean, centered login form
+def show_login_page():
+    st.markdown("<h1 style='text-align: center;'>FX Trading Journal</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>Secure access for authorized traders only.</p>", unsafe_allow_html=True)
+    
+    # Center the login button using columns
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("Log in with Google", use_container_width=True):
+            st.login("google")
+
+# Check authentication state
+if not st.experimental_user.is_logged_in:
+    show_login_page()
+    st.stop()  # Hides everything below this line until login is successful
+
+# --- Main App Starts Here ---
+st.title("Welcome to your Dashboard")
+# Rest of your trading journal code...
+
 
 
 # --- Main App Starts Here ---
