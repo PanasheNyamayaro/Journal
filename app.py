@@ -21,7 +21,7 @@ def show_login_page():
             st.login("google")
 
 # Check authentication state
-if not st.experimental_user.is_logged_in:
+if not st.user.is_logged_in:
     show_login_page()
     st.stop()  # Hides everything below this line until login is successful
 show_login_page()
